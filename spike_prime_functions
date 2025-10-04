@@ -1,0 +1,47 @@
+from hub import port
+import runloop
+import motor
+import motor_pair
+
+#C and D are the attachment motors and A and E are the wheel motors.
+
+motor_pair.pair(motor_pair.PAIR_1, port.A, port.E)
+
+async def moveFront(rotations):
+    await motor_pair.move_tank_for_degrees(motor_pair.PAIR_1, rotations*360, 500, 500, acceleration=500)
+
+async def moveBack(rotations):
+    await motor_pair.move_tank_for_degrees(motor_pair.PAIR_1, -rotations*360, 500, 500, acceleration=500)
+
+async def turnLeft(degree):
+    await motor_pair.move_tank_for_degrees(motor_pair.PAIR_1, degree*2, -500, 800)
+
+async def turnRight(degree):
+    await motor_pair.move_tank_for_degrees(motor_pair.PAIR_1, degree*2, 500, -800)
+
+async def moveFrontAttachment(rotations):
+    await motor.run_for_degrees(port.D, rotations*360, 500)
+
+async def moveBackAttachment(rotations):
+    await motor.run_for_degrees(port.C, rotations*360, 500)
+
+async def moveAllAttachments(rotations):
+    motor.run_for_degrees(port.D, rotations*360, 500)
+    await motor.run_for_degrees(port.C, rotations*360, 500)
+
+async def main():
+    # write your code here
+    await moveFront(3)
+    await turnLeft(90)
+    await moveFrontAttachment(3)
+    await moveBackAttachment(4)
+    await moveAllAttachments(3)
+    await moveFront(1)
+    await turnLeft(90)
+    await moveFront(3)
+    await turnLeft(90)
+    await moveFront(1)
+    await turnLeft(90)
+
+
+runloop.run(main())
